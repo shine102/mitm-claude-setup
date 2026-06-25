@@ -1,0 +1,13 @@
+[Unit]
+Description=mitmproxy transparent proxy for Claude Code
+After=network.target
+
+[Service]
+ExecStart=%h/mitmproxy-venv/bin/mitmdump -s %h/code/claude-mitm/scripts/modify_response.py
+StandardOutput=journal
+StandardError=journal
+Restart=always
+RestartSec=3
+
+[Install]
+WantedBy=default.target
