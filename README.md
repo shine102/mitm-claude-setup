@@ -67,6 +67,12 @@ Just run `claude` as normal. The alias routes traffic through mitmproxy automati
 claude
 ```
 
+The alias sets `NO_PROXY=downloads.claude.ai` so `claude update` downloads the
+~233 MB native binary directly instead of through mitmproxy. Routing that large
+download through the proxy makes mitmproxy buffer the whole body in memory, which
+stalls/fails the update and leaves 0-byte files in
+`~/.local/share/claude/versions/`.
+
 ## Supported endpoints
 
 | Endpoint | Override file | Replaces |

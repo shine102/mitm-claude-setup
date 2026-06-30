@@ -45,7 +45,9 @@ echo "==> Adding claude alias to $RC_FILE..."
 mkdir -p "$(dirname "$RC_FILE")"
 # `env VAR=val claude` is portable across bash/zsh/fish; the cert path is
 # expanded now so it doesn't depend on shell-specific ~ expansion in aliases.
-ALIAS_BODY="env HTTP_PROXY=http://127.0.0.1:8080 HTTPS_PROXY=http://127.0.0.1:8080 NODE_EXTRA_CA_CERTS=$CERT_PATH claude"
+# NO_PROXY=downloads.claude.ai keeps the ~233MB native-binary update download
+# off mitmproxy — buffering it through the proxy stalls/fails `claude update`.
+ALIAS_BODY="env HTTP_PROXY=http://127.0.0.1:8080 HTTPS_PROXY=http://127.0.0.1:8080 NO_PROXY=downloads.claude.ai NODE_EXTRA_CA_CERTS=$CERT_PATH claude"
 if ! grep -q 'claude-mitm: route Claude Code' "$RC_FILE" 2>/dev/null; then
     {
         echo ""
