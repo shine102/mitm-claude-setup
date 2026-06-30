@@ -3,7 +3,8 @@ Description=mitmproxy transparent proxy for Claude Code
 After=network.target
 
 [Service]
-ExecStart=%h/mitmproxy-venv/bin/mitmdump -s %h/code/claude-mitm/scripts/modify_response.py
+# Paths are filled in by setup.sh based on where the repo is cloned.
+ExecStart=__VENV__/bin/mitmdump -s __SCRIPT__
 StandardOutput=journal
 StandardError=journal
 Restart=always

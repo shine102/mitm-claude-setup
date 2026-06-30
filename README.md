@@ -30,11 +30,17 @@ claude-mitm/
 ### 1. Clone and run setup
 
 ```bash
-git clone <repo-url> ~/code/claude-mitm
-cd ~/code/claude-mitm
+git clone <repo-url> claude-mitm   # any location works
+cd claude-mitm
 ./setup.sh
-source ~/.bashrc
 ```
+
+`setup.sh` resolves the repo location automatically (no fixed path required),
+detects your login shell (`bash`/`zsh`/`fish`, falling back to `~/.profile`),
+and adds the `claude` alias to the matching rc file. Reload your shell
+afterwards, e.g. `source ~/.bashrc` / `source ~/.zshrc`, or open a new terminal.
+
+The virtualenv defaults to `~/mitmproxy-venv`; override with `MITM_VENV=/path ./setup.sh`.
 
 ### 2. Create your override files
 
@@ -96,8 +102,9 @@ systemctl --user stop mitmproxy.service
 systemctl --user disable mitmproxy.service
 rm ~/.config/systemd/user/mitmproxy.service
 systemctl --user daemon-reload
-rm -rf ~/mitmproxy-venv
-# Remove the alias line from ~/.bashrc
+rm -rf ~/mitmproxy-venv   # or your $MITM_VENV path
+# Remove the "claude-mitm" alias line from your shell rc file
+# (~/.bashrc, ~/.zshrc, ~/.config/fish/config.fish, or ~/.profile)
 ```
 
 ## Inspecting traffic
