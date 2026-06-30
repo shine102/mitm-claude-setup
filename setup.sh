@@ -10,6 +10,16 @@ echo "==> Creating Python virtual environment..."
 python3 -m venv "$VENV_DIR"
 "$VENV_DIR/bin/pip" install mitmproxy
 
+echo "==> Generating mitmproxy CA cert (first run)..."
+if [ ! -f "$CERT_PATH" ]; then
+    "$VENV_DIR/bin/mitmdump" --mode regular@18080 --set flow_detail=0 -q &
+    MITM_PID=$!
+    sleep 2
+    kill $MITM_PID 2>/dev/null || true
+else
+    echo "    CA cert already exists, skipping."
+fi
+
 echo "==> Installing systemd user service..."
 mkdir -p ~/.config/systemd/user
 sed -e "s|__VENV__|$VENV_DIR|g" \
@@ -21,12 +31,6 @@ systemctl --user start mitmproxy.service
 
 echo "==> Enabling lingering (service persists after logout)..."
 loginctl enable-linger "$USER"
-
-echo "==> Generating mitmproxy CA cert (first run)..."
-"$VENV_DIR/bin/mitmdump" --set flow_detail=0 -q &
-MITM_PID=$!
-sleep 2
-kill $MITM_PID 2>/dev/null || true
 
 # Pick the rc file for the user's login shell so the alias is actually loaded.
 SHELL_NAME="$(basename "${SHELL:-/bin/bash}")"
