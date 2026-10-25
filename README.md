@@ -73,6 +73,12 @@ download through the proxy makes mitmproxy buffer the whole body in memory, whic
 stalls/fails the update and leaves 0-byte files in
 `~/.local/share/claude/versions/`.
 
+mitmproxy only intercepts `api.anthropic.com` (`allow_hosts` in
+`systemd/mitmproxy.service`). The proxy env vars are inherited by every tool
+Claude runs (git, curl, pip, ...), and those don't read `NODE_EXTRA_CA_CERTS`,
+so all other hosts are tunneled through untouched with their real certs. If you
+add a route for another host, add it to `allow_hosts` too.
+
 ## Supported endpoints
 
 | Endpoint | Override file | Replaces |

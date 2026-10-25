@@ -4,7 +4,11 @@ After=network.target
 
 [Service]
 # Paths are filled in by setup.sh based on where the repo is cloned.
-ExecStart=__VENV__/bin/mitmdump -s __SCRIPT__
+# allow_hosts: only intercept api.anthropic.com; every other host is tunneled
+# untouched with its real cert. The proxy env leaks into tools Claude spawns
+# (git, curl, pip, ...) which don't read NODE_EXTRA_CA_CERTS, so intercepting
+# them would fail TLS verification.
+ExecStart=__VENV__/bin/mitmdump -s __SCRIPT__ --set "allow_hosts=^api[.]anthropic[.]com(:443)?$$"
 StandardOutput=journal
 StandardError=journal
 Restart=always
